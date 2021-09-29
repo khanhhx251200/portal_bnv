@@ -1,0 +1,51 @@
+name: app_mobile
+description: Ứng dụng của ECOIT
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.2
+  font_awesome_flutter: ^9.1.0
+  google_fonts: ^2.1.0
+  shared_preferences: ^2.0.7
+  flutter_datetime_picker: ^1.5.1
+  intl: ^0.17.0
+  regexpattern: ^2.0.1
+  flutter_svg: ^0.22.0
+  loader_overlay: ^2.0.2+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+      - assets/images/
+      - assets/icons/
+
+  fonts:
+     - family: Roboto
+       fonts:
+         - asset: assets/fonts/Roboto/Roboto-Light.ttf
+           weight: 500
+
+         - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+           weight: 700
+
+         - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+           weight: 300
+
