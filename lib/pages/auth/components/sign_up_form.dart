@@ -139,6 +139,7 @@ class _SignUpFormState extends State<SignUpForm> {
         setState(() {
           _isLoading = !_isLoading;
         });
+
       });
     }
   }
@@ -316,6 +317,7 @@ class _SignUpFormState extends State<SignUpForm> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(radiusInputSize)),
         color: Colors.white,
+
       ),
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
@@ -433,7 +435,6 @@ class _SignUpFormState extends State<SignUpForm> {
               minTime: DateTime(1900, 1, 1),
               maxTime: DateTime.now(), onChanged: (date) {
           }, onConfirm: (date) {
-            String languageCode = Localizations.localeOf(context).languageCode;
             setState(() {
               controller.text = DateFormat('dd/MM/yyyy').format(date);
             });

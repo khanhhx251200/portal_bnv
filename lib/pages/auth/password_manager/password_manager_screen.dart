@@ -35,7 +35,7 @@ class _PasswordManagerScreenState extends State<PasswordManagerScreen> {
                 padding: EdgeInsets.symmetric(horizontal: highSize),
                 child: Column(
                   children: [
-                    Spacer(),
+                    Spacer(flex: 1,),
                     Text(
                       kChangePassword,
                       textAlign: TextAlign.center,

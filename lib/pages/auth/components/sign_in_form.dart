@@ -8,7 +8,8 @@ import 'package:app_mobile/core/models/request/login_request.dart';
 import 'package:app_mobile/core/services/share_preferences_service.dart';
 import 'package:app_mobile/core/utils/keyboard_utils.dart';
 import 'package:app_mobile/pages/auth/forgot_password/forgot_password_screen.dart';
-import 'package:app_mobile/pages/auth/password_manager/password_manager_screen.dart';
+import 'package:app_mobile/pages/dashboard/dashboard_screen.dart';
+import 'package:app_mobile/pages/update_account/update_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:regexpattern/regexpattern.dart';
@@ -49,6 +50,8 @@ class _SignInFormState extends State<SignInForm> {
       setState(() {
         _isLoading = !_isLoading;
       });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => DashBoardScreen()));
     });
     if (rememberLogin) {
       _preferences.setRememberLogin(loginRequest);
@@ -187,6 +190,13 @@ class _SignInFormState extends State<SignInForm> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(bigSize)),
         color: kWhiteColors,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 3.0,
+          ),
+        ],
       ),
       padding: EdgeInsets.only(left: xSmallSize),
       child: TextFormField(
@@ -217,6 +227,13 @@ class _SignInFormState extends State<SignInForm> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(bigSize)),
         color: kWhiteColors,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 3.0,
+          ),
+        ],
       ),
       padding: EdgeInsets.only(left: xSmallSize),
       child: TextFormField(

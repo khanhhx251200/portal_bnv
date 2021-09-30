@@ -5,4 +5,5 @@ class Constant{
   static final KEY_PASSWORD = 'key_password';
   static final LOADING = 'LOADING';
   static final SIGN_IN = 'SIGN_IN';
+  static final UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
 }

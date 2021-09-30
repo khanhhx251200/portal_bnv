@@ -22,6 +22,7 @@ dependencies:
   regexpattern: ^2.0.1
   flutter_svg: ^0.22.0
   loader_overlay: ^2.0.2+1
+  curved_navigation_bar: ^1.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:app_mobile/core/constants/color_constants.dart';
+import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:app_mobile/pages/splash/splash_screen.dart';
 import 'package:app_mobile/routes.dart';
 import 'package:flutter/material.dart';

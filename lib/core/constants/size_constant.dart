@@ -10,6 +10,7 @@ const mediumSize = 14.0;
 const highSize = 16.0;
 const veryHighSize = 18.0;
 const bigSize = 20.0;
+const iconBottomSize = 30.0;
 const radiusInputSize = 12.0;
 
 // Get the proportionate height as per screen size
