@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ButtonLoadingWidget extends StatelessWidget {
-  const ButtonLoadingWidget({Key key}) : super(key: key);
+  final color;
+
+  const ButtonLoadingWidget({Key key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class ButtonLoadingWidget extends StatelessWidget {
         padding: EdgeInsets.all(defaultPadding/2),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [kPrimaryColor, kSecondColors] ,
+              colors: color!= null ? [Colors.green.shade400, Colors.green.shade300]  : [kPrimaryColors, kPrimaryColors] ,
               end: Alignment.centerLeft,
               begin: Alignment.centerRight),
           borderRadius: BorderRadius.all(

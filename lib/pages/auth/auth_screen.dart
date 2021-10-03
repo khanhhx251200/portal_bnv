@@ -55,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         style: TextStyle(color: kBlackColors)),
                     TextSpan(
                         text: isLogin ? kRegistor : kLogin,
-                        style: TextStyle(color: kPrimaryColor)),
+                        style: TextStyle(color: kPrimaryColors)),
                   ]),
                 ),
               ),

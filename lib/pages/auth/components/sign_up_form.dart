@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app_mobile/components/always_disable_focus_node.dart';
 import 'package:app_mobile/components/btn_loading_widget.dart';
@@ -8,10 +9,12 @@ import 'package:app_mobile/core/constants/constant.dart';
 import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:app_mobile/core/constants/string_constants.dart';
 import 'package:app_mobile/core/models/request/sign_up_request.dart';
+import 'package:app_mobile/pages/auth/verify_email/verify_email_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:hb_check_code/hb_check_code.dart';
 import 'package:intl/intl.dart';
 import 'package:regexpattern/regexpattern.dart';
 
@@ -40,6 +43,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _codeCaptchaController =
       TextEditingController();
 
   int _isCitizen = 0;
@@ -135,11 +140,12 @@ class _SignUpFormState extends State<SignUpForm> {
       setState(() {
         _isLoading = !_isLoading;
       });
-      Future.delayed(Duration(seconds: 2), (){
+      Future.delayed(Duration(seconds: 2), () {
         setState(() {
           _isLoading = !_isLoading;
         });
-
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => VerifyEmailScreen()));
       });
     }
   }
@@ -171,7 +177,7 @@ class _SignUpFormState extends State<SignUpForm> {
       setState(() {
         _isLoading = !_isLoading;
       });
-      Future.delayed(Duration(seconds: 2), (){
+      Future.delayed(Duration(seconds: 2), () {
         setState(() {
           _isLoading = !_isLoading;
         });
@@ -197,8 +203,15 @@ class _SignUpFormState extends State<SignUpForm> {
     confirmPasswordController.dispose();
   }
 
+  String _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
   @override
   Widget build(BuildContext context) {
+    String code = getRandomString(6);
     return SingleChildScrollView(
       child: Form(
         key: _formKey,
@@ -243,7 +256,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   padding: EdgeInsets.only(left: defaultPadding),
                   child: Text("(*) là $kRequired",
                       textAlign: TextAlign.start,
-                      style: TextStyle( fontSize: mediumSize, color: kErrorColor)),
+                      style:
+                          TextStyle(fontSize: mediumSize, color: kErrorColor)),
                 ),
               ],
             ),
@@ -278,7 +292,7 @@ class _SignUpFormState extends State<SignUpForm> {
             //   contentPadding: EdgeInsets.all(0),
             //   leading: Checkbox(
             //     checkColor: kWhiteColors,
-            //     activeColor: kPrimaryColor,
+            //     activeColor: kPrimaryColors,
             //     value: isAccept,
             //     onChanged: (bool value) {
             //       setState(() {
@@ -289,19 +303,52 @@ class _SignUpFormState extends State<SignUpForm> {
             //   title: Text(kAgreeTerm),
             // ),
             SizedBox(height: defaultPadding),
+            Row(children: [
+              Expanded(child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal:8.0),
+                child: TextFormField(
+                  maxLength: 6,
+                  controller: _codeCaptchaController,
+                  validator: (value) {
+                    if(value.isEmpty){
+                      return kRequired;
+                    } else if(value != code){
+                      setState(() {
+                        _codeCaptchaController.clear();
+                      });
+                      return kCaptchaNotMatch;
+                    }
+                    return null;
+                  },
+                ),
+              )),
+              Container(
+                  alignment: Alignment.center,
+                  child: HBCheckCode(
+                    code: code,
+                  )),
+              InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: Icon(Icons.refresh)),
+            ]),
+            SizedBox(height: defaultPadding),
             Center(
-              child: _isLoading ? ButtonLoadingWidget() : ButtonWidget(
-                onClick: () {
-                  if (_formKey.currentState.validate()) {
-                    print("Validated");
-                    getFormSignUp();
-                    // widget.toLogin();
-                  } else {
-                    print("Not Validated");
-                  }
-                },
-                btnText: kRegistor,
-              ),
+              child: _isLoading
+                  ? ButtonLoadingWidget()
+                  : ButtonWidget(
+                      onClick: () {
+                        if (_formKey.currentState.validate()) {
+                          print("Validated");
+                          getFormSignUp();
+                          // widget.toLogin();
+                        } else {
+                          print("Not Validated");
+                        }
+                      },
+                      btnText: kRegistor,
+                    ),
             ),
           ],
         ),
@@ -317,7 +364,6 @@ class _SignUpFormState extends State<SignUpForm> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(radiusInputSize)),
         color: Colors.white,
-
       ),
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
@@ -353,7 +399,7 @@ class _SignUpFormState extends State<SignUpForm> {
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
         obscureText: visible,
-        textInputAction: isConfirm ? TextInputAction.done : TextInputAction.go ,
+        textInputAction: isConfirm ? TextInputAction.done : TextInputAction.go,
         controller: isConfirm ? confirmPasswordController : passwordController,
         decoration: InputDecoration(
           labelText: hint,
@@ -433,8 +479,8 @@ class _SignUpFormState extends State<SignUpForm> {
           await DatePicker.showDatePicker(context,
               showTitleActions: true,
               minTime: DateTime(1900, 1, 1),
-              maxTime: DateTime.now(), onChanged: (date) {
-          }, onConfirm: (date) {
+              maxTime: DateTime.now(),
+              onChanged: (date) {}, onConfirm: (date) {
             setState(() {
               controller.text = DateFormat('dd/MM/yyyy').format(date);
             });

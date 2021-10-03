@@ -1,7 +1,6 @@
 import 'package:app_mobile/core/constants/color_constants.dart';
 import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemMenu extends StatelessWidget {
   const ItemMenu({
@@ -28,7 +27,7 @@ class ItemMenu extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: kSecondColors,
+              color: kPrimaryColors,
               size: iconBottomSize,
             ),
             SizedBox(width: bigSize),

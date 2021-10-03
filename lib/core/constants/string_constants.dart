@@ -52,15 +52,32 @@ const kAccountManage = 'Quản lý tài khoản';
 const kFileManage = 'Quản lý hồ sơ';
 const kDocumentManage = 'Quản lý tài liệu';
 const kProcedureManage = 'Quản lý quy trình';
+const kRequestManage = 'Quản lý yêu cầu';
+const kPayManage = 'Quản lý thanh toán';
 const kPasswordManage = 'Quản lý mật khẩu';
 const kPostsManage = 'Quản lý bài viết';
-const kAskAndQuestion = 'Câu hỏi thường gặp';
+const kFrequentlyAskedQuestions = 'Câu hỏi thường gặp';
 const kLogout = 'Đăng xuất';
 const kVerifyEmail = 'Xác minh Email đăng ký';
+const kVerifyEmailNotMatch = 'Mã xác minh không đúng';
 const kEnterTheCodeSentTo = 'Nhập mã được gửi đến ';
+const kSixDigitCode = 'Mã gồm có 6 chữ số';
+const kCaptchaNotMatch = 'Mã Captcha không đúng';
+const kSearch = 'Tìm kiếm';
+const kIconSearch = 'iconSearch';
+const kHello = 'Xin chào!';
+const kHowCanWeHelpYou = 'Chúng tôi có thể giúp gì được cho bạn?';
+const kCommonProblems = 'Các vấn đề thường gặp';
+const kAnswers = 'Giải đáp';
+const kWasTheInformationUsefulToYou = 'Thông tin có hữu ích với bạn không?';
+const kYes = 'Có';
+const kNo = 'Không';
+const kThankYouForComment = 'Cảm ơn bạn đã góp ý!';
 
 final patternOnlyText = RegExp(
     r'([0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?\.\,])');
 final patternCode = RegExp(
     r'([~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?\.\,])');
+final RegExp emailValidatorRegExp =
+RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 

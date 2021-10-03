@@ -14,15 +14,43 @@ dependencies:
 
 
   cupertino_icons: ^1.0.2
+  # font
   font_awesome_flutter: ^9.1.0
   google_fonts: ^2.1.0
+
+  # share preferences
   shared_preferences: ^2.0.7
+
+  # dateTime picker
   flutter_datetime_picker: ^1.5.1
+
+  # format dates
   intl: ^0.17.0
+
+  # regex pattern
   regexpattern: ^2.0.1
+
+  # svg image
   flutter_svg: ^0.22.0
+
+  # loader overlay
   loader_overlay: ^2.0.2+1
+
+  # bottom navigation
   curved_navigation_bar: ^1.0.1
+
+  # input OTP
+  pin_code_fields: ^7.3.0
+
+  # captcha
+  hb_check_code: ^0.0.2
+
+  # hive database
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
+
+  # slider
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:

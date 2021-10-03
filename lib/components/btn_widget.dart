@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class ButtonWidget extends StatelessWidget {
   final btnText;
   final onClick;
+  final color;
 
-  const ButtonWidget({Key key, this.btnText, this.onClick}) : super(key: key);
+  const ButtonWidget({Key key, this.btnText, this.onClick, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class ButtonWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [kPrimaryColor, kSecondColors],
+              colors: color!= null ? [Colors.green.shade400, Colors.green.shade300]  : [kPrimaryColors, kPrimaryColors],
               end: Alignment.centerLeft,
               begin: Alignment.centerRight),
           borderRadius: BorderRadius.all(

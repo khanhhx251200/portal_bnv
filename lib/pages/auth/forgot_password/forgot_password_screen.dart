@@ -39,7 +39,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     style: TextStyle(
                         fontSize: bigSize+4,
                         fontWeight: FontWeight.bold,
-                        color: kSecondColors),
+                        color: kPrimaryColors),
                   ),
                   SizedBox(height: defaultPadding),
                   Text(
@@ -104,7 +104,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           setState(() {
             if (value.isEmpty) {
               error = kEmailNull;
-            } else if (value.isEmail()) {
+            } else if (!value.isEmail()) {
               error = kNotEmail;
             } else {
               error = '';

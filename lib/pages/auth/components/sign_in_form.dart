@@ -130,7 +130,7 @@ class _SignInFormState extends State<SignInForm> {
             children: [
               Checkbox(
                 checkColor: kWhiteColors,
-                activeColor: kSecondColors,
+                activeColor: kPrimaryColors,
                 value: rememberLogin,
                 onChanged: (value) {
                   setState(() {

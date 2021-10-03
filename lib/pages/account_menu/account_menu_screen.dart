@@ -3,10 +3,11 @@ import 'package:app_mobile/core/constants/color_constants.dart';
 import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:app_mobile/core/constants/string_constants.dart';
 import 'package:app_mobile/core/services/share_preferences_service.dart';
-import 'package:app_mobile/pages/account_menu/components/account_menu.dart';
+import 'package:app_mobile/pages/account_menu/components/item_menu.dart';
 import 'package:app_mobile/pages/auth/auth_screen.dart';
 import 'package:app_mobile/pages/auth/password_manager/password_manager_screen.dart';
 import 'package:app_mobile/pages/auth/verify_email/verify_email_screen.dart';
+import 'package:app_mobile/pages/frequently_asked_questions/frequently_asked_questions_screen.dart';
 import 'package:app_mobile/pages/update_account/update_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class _AccountMenuState extends State<AccountMenu> {
   }
   pushToAskAndQuestion(BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => VerifyEmailScreen()));
+        MaterialPageRoute(builder: (context) => FrequentlyAskedQuestionScreen()));
   }
 
   logout() async {
@@ -46,10 +47,84 @@ class _AccountMenuState extends State<AccountMenu> {
             (Route<dynamic> route) => false);
   }
 
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: defaultPadding),
+            color: kPrimaryColors,
+            child: ListTile(
+              onTap: () {
+                pushToAccountManage(context);
+              },
+              leading: CircleAvatar(
+                radius: 24.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage('assets/images/avatar_empty.png'),
+              ),
+              title: Text(
+                'Hoàng Xuân Khánh',
+                style:
+                TextStyle(color: kWhiteColors, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          SizedBox(height: defaultPadding),
+          ListView(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              ItemMenu(text: kAccountManage, icon: Icons.person, onPress: () {
+                pushToAccountManage(context);
+              }),
+              ItemMenu(text: kFileManage, icon: Icons.folder, onPress: () {}),
+              ItemMenu(
+                  text: kDocumentManage,
+                  icon: Icons.insert_drive_file,
+                  onPress: () {}),
+              ItemMenu(
+                  text: kProcedureManage,
+                  icon: Icons.settings_applications_sharp,
+                  onPress: () {}),
+              ItemMenu(
+                  text: kRequestManage,
+                  icon: Icons.request_page,
+                  onPress: () {}),
+              ItemMenu(
+                  text: kPayManage,
+                  icon: Icons.payment,
+                  onPress: () {}),
+              ItemMenu(
+                  text: kPostsManage, icon: Icons.assignment, onPress: () {}),
+              ItemMenu(
+                  text: kPasswordManage,
+                  icon: Icons.vpn_key_sharp,
+                  onPress: () {
+                    pushToPasswordManage(context);
+                  }),
+              ItemMenu(
+                  text: kFrequentlyAskedQuestions,
+                  icon: Icons.question_answer,
+                  onPress: () {
+                    pushToAskAndQuestion(context);
+                  }),
+              ItemMenu(text: kLogout, icon: Icons.logout, onPress: () {
+                _openSignOutDrawer(context);
+              }),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   void _openSignOutDrawer(BuildContext context) {
     showModalBottomSheet(
         shape: BottomSheetShape(),
-        backgroundColor: kSecondColors,
+        backgroundColor: kPrimaryColors,
         context: context,
         builder: (context) {
           return Container(
@@ -65,23 +140,23 @@ class _AccountMenuState extends State<AccountMenu> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 RichText(text: TextSpan(
-                  children: [
-                    TextSpan(text: "Hoàng Xuân Khánh", style: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .scaffoldBackgroundColor,
-                        fontSize: veryHighSize,
-                        fontWeight: FontWeight.w600)),
-                    TextSpan(text: ", bạn có chắc chắn muốn đăng xuất không?",
-
-                      style: TextStyle(
+                    children: [
+                      TextSpan(text: "Hoàng Xuân Khánh", style: TextStyle(
                           color: Theme
                               .of(context)
                               .scaffoldBackgroundColor,
-                          fontSize: highSize,
-                          fontWeight: FontWeight.w300),
-                    )
-                  ]
+                          fontSize: veryHighSize,
+                          fontWeight: FontWeight.w600)),
+                      TextSpan(text: ", bạn có chắc chắn muốn đăng xuất không?",
+
+                        style: TextStyle(
+                            color: Theme
+                                .of(context)
+                                .scaffoldBackgroundColor,
+                            fontSize: highSize,
+                            fontWeight: FontWeight.w300),
+                      )
+                    ]
                 )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +171,7 @@ class _AccountMenuState extends State<AccountMenu> {
                         child: Text(
                           "Đăng xuất",
                           style: TextStyle(
-                            color: kPrimaryColor,
+                            color: kPrimaryColors,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -139,65 +214,4 @@ class _AccountMenuState extends State<AccountMenu> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: defaultPadding),
-            color: kSecondColors,
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 24.0,
-                backgroundColor: Colors.transparent,
-                backgroundImage: AssetImage('assets/images/avatar_empty.png'),
-              ),
-              title: Text(
-                'Hoàng Xuân Khánh',
-                style:
-                TextStyle(color: kWhiteColors, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          SizedBox(height: defaultPadding),
-          ListView(
-            physics: BouncingScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              ItemMenu(text: kAccountManage, icon: Icons.person, onPress: () {
-                pushToAccountManage(context);
-              }),
-              ItemMenu(text: kFileManage, icon: Icons.folder, onPress: () {}),
-              ItemMenu(
-                  text: kDocumentManage,
-                  icon: Icons.insert_drive_file,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kProcedureManage,
-                  icon: Icons.settings_applications_sharp,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kPostsManage, icon: Icons.assignment, onPress: () {}),
-              ItemMenu(
-                  text: kPasswordManage,
-                  icon: Icons.vpn_key_sharp,
-                  onPress: () {
-                    pushToPasswordManage(context);
-                  }),
-              ItemMenu(
-                  text: kAskAndQuestion,
-                  icon: Icons.question_answer,
-                  onPress: () {
-                    pushToAskAndQuestion(context);
-                  }),
-              ItemMenu(text: kLogout, icon: Icons.logout, onPress: () {
-                _openSignOutDrawer(context);
-              }),
-            ],
-          )
-        ],
-      ),
-    );
-  }
 }

@@ -141,7 +141,7 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
                     },
                     child: Text(
                       kExit,
-                      style: TextStyle(color: kSecondColors),
+                      style: TextStyle(color: kPrimaryColors),
                     ),
                   ),
                 ),
@@ -177,7 +177,7 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
                   kUpdate,
                   style: TextStyle(
                       fontSize: highSize,
-                      color: kSecondColors,
+                      color: kPrimaryColors,
                       fontWeight: FontWeight.bold),
                 ),
               ),

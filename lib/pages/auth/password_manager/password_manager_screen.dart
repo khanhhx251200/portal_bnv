@@ -42,7 +42,7 @@ class _PasswordManagerScreenState extends State<PasswordManagerScreen> {
                       style: TextStyle(
                           fontSize: bigSize + 4,
                           fontWeight: FontWeight.bold,
-                          color: kSecondColors),
+                          color: kPrimaryColors),
                     ),
                     _textPasswordOldInput(kPasswordCurrent, isShowHidePw),
                     _textPasswordNewInput(kPasswordNew, isShowHidePwN),
