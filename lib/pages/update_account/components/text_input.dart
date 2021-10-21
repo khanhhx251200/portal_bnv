@@ -36,8 +36,7 @@ class _TextInputState extends State<TextInput> {
   @override
   void dispose() {
     super.dispose();
-    _focus.removeListener(_onFocusChange);
-    _focus.dispose();
+
   }
 
   void _onFocusChange() {

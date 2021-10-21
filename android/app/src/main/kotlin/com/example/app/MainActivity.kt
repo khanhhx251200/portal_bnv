@@ -1,4 +1,4 @@
-package com.example.app
+package com.ecoit.portal
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,33 +1,31 @@
 class SignUpRequest {
-  String fullName;
-  String passport;
-  String codeEnterprise;
-  String nameEnterprise;
+  String name;
+  String code;
   String dateCreatePassport;
   String email;
   String phone;
   String password;
+  int type;
 
   SignUpRequest(
-      {this.fullName,
-      this.passport,
-      this.codeEnterprise,
-      this.nameEnterprise,
+      {this.name,
+      this.code,
       this.dateCreatePassport,
       this.email,
       this.phone,
+      this.type,
       this.password});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      "fullName": fullName,
-      "passport": passport,
-      "codeEnterprise": codeEnterprise,
-      "nameEnterprise": nameEnterprise,
-      "dateCreatePassport": dateCreatePassport,
+      "name": name,
+      "code": code,
+      "ngayCap": dateCreatePassport,
       "email": email,
       "phone": phone,
-      "password": password,
+      "passWord": password,
+      "rePassWord": password,
+      "type": type,
     };
     return map;
   }

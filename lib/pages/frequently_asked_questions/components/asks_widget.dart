@@ -14,7 +14,6 @@ class AsksWidget extends StatefulWidget {
 }
 
 class _AsksWidgetState extends State<AsksWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -22,12 +21,10 @@ class _AsksWidgetState extends State<AsksWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
-      padding: EdgeInsets.all(bigSize),
+      padding: EdgeInsets.symmetric(horizontal: bigSize, vertical: mediumSize),
       decoration: BoxDecoration(
           color: kWhiteColors,
           borderRadius: BorderRadius.only(
@@ -44,7 +41,8 @@ class _AsksWidgetState extends State<AsksWidget> {
                     fontWeight: FontWeight.bold, fontSize: veryHighSize)),
           ),
           SizedBox(height: mediumSize),
-          Expanded(child: ListView.builder(
+          Expanded(
+              child: ListView.builder(
             itemCount: 12,
             itemBuilder: (context, index) {
               return ItemQuestion();
@@ -55,4 +53,3 @@ class _AsksWidgetState extends State<AsksWidget> {
     );
   }
 }
-

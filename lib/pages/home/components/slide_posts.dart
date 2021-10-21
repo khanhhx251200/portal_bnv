@@ -62,7 +62,7 @@ class _SlidePostsState extends State<SlidePosts> {
       width: activeIndex == index ? 20 : 6,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(3),
-          color: activeIndex == index ? kPrimaryColors : Color(0xFFD8D8D8)),
+          color: activeIndex == index ? kWhiteColors : Color(0xFFD8D8D8)),
       duration: defaultDuration,
     );
   }

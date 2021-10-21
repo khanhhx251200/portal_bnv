@@ -1,22 +1,23 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:app_mobile/components/always_disable_focus_node.dart';
-import 'package:app_mobile/components/btn_loading_widget.dart';
 import 'package:app_mobile/components/btn_widget.dart';
 import 'package:app_mobile/core/constants/color_constants.dart';
-import 'package:app_mobile/core/constants/constant.dart';
 import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:app_mobile/core/constants/string_constants.dart';
 import 'package:app_mobile/core/models/request/sign_up_request.dart';
-import 'package:app_mobile/pages/auth/verify_email/verify_email_screen.dart';
+import 'package:app_mobile/core/providers/auth_provider/sign_up_provider.dart';
+import 'package:app_mobile/core/utils/keyboard_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hb_check_code/hb_check_code.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
 import 'package:regexpattern/regexpattern.dart';
+import 'package:toast/toast.dart';
 
 class SignUpForm extends StatefulWidget {
   final Function() toLogin;
@@ -28,9 +29,9 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
+  final focus = FocusNode();
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController codeEnterpriseController =
@@ -44,58 +45,41 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  final TextEditingController _codeCaptchaController =
-      TextEditingController();
+  final TextEditingController _codeCaptchaController = TextEditingController();
 
   int _isCitizen = 0;
   bool isAccept = false;
   bool _passwordVisibility = true;
   bool _confirmPasswordVisibility = true;
-  bool _isLoading = false;
 
-  final patternOnlyText = RegExp(
-      r'([0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?\.\,])');
-  final patternCode = RegExp(
-      r'^((?![~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?\.\,]).)+$');
-
-  getFormSignUp() {
-    String fullName = '';
-    String passport = '';
-    String codeEnterprise = '';
-    String nameEnterprise = '';
-    String dateCreate = dateCreateController.text;
+  getFormSignUp(SignUpProvider provider) {
+    String name = '';
+    String code = '';
     String email = emailController.text.trim();
     String phone = phoneController.text.trim();
-    String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
+    String createDate = dateCreateController.text;
     SignUpRequest request;
     if (_isCitizen == 0) {
       //Cá nhân
-      fullName = fullNameController.text.trim();
-      passport = passportController.text.trim();
-      request = SignUpRequest(
-        fullName: fullName,
-        passport: passport,
-        dateCreatePassport: dateCreate,
-        email: email,
-        phone: phone,
-        password: password,
-      );
-      handleSignUp(request);
+      name = fullNameController.text.trim();
+      code = passportController.text.trim();
     } else {
       //doanh nghiệp
-      codeEnterprise = fullNameController.text.trim();
-      nameEnterprise = passportController.text.trim();
-      request = SignUpRequest(
-        codeEnterprise: codeEnterprise,
-        nameEnterprise: nameEnterprise,
-        dateCreatePassport: dateCreate,
-        email: email,
-        phone: phone,
-        password: password,
-      );
-      handleSignUp(request);
+      name = nameEnterpriseController.text.trim();
+      code = codeEnterpriseController.text.trim();
     }
+
+    request = SignUpRequest(
+      name: name,
+      code: code,
+      dateCreatePassport: createDate,
+      email: email,
+      phone: phone,
+      password: confirmPassword,
+      type: _isCitizen,
+    );
+    handleSignUp(request, provider);
   }
 
   void _toggle(isConfirm) {
@@ -108,85 +92,37 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
-  handleSignUp(SignUpRequest request) {
+  handleSignUp(SignUpRequest request, SignUpProvider provider) {
     print('req: ' + request.toString());
-    Platform.isAndroid ? _showConfirmDialog() : _showCupertinoDialog();
-  }
-
-  void _showConfirmDialog() async {
-    final res = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(kConfirm),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () {
-                    _dismissDialog();
-                  },
-                  child: Text(kClose)),
-              TextButton(
-                onPressed: () {
-                  _dismissDialog(status: Constant.SIGN_IN);
-                },
-                child: Text(kAgree),
-              )
-            ],
-          );
-        });
-    if (res != null) {
-      // SignIn in here
-      print('sign in after close dialog');
-      setState(() {
-        _isLoading = !_isLoading;
-      });
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = !_isLoading;
-        });
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => VerifyEmailScreen()));
-      });
-    }
-  }
-
-  void _showCupertinoDialog() async {
-    final res = await showDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(kConfirmSignUp),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () {
-                    _dismissDialog();
-                  },
-                  child: Text(kClose)),
-              TextButton(
-                onPressed: () {
-                  _dismissDialog(status: Constant.LOADING);
-                },
-                child: Text(kAgree),
-              )
-            ],
-          );
-        });
-    if (res != null) {
-      // SignIn in here
-      print('sign in after close dialog');
-      setState(() {
-        _isLoading = !_isLoading;
-      });
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = !_isLoading;
-        });
-      });
-    }
-  }
-
-  _dismissDialog({status}) {
-    Navigator.pop(context, status);
+    provider.setSignUpRequest = request;
+    context.loaderOverlay.show();
+    Future.delayed(Duration(milliseconds: 500), () async {
+      try {
+        final response = await provider.signUp(provider.signUpRequest);
+        if (response['resultCode'] == 200) {
+          Toast.show(kRegistor + " $kSuccess", context,
+              backgroundColor: kSuccessColor,
+              textColor: kWhiteColors,
+              duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+          widget.toLogin();
+        } else {
+          Toast.show(response['message'], context,
+              backgroundColor: kErrorColor,
+              textColor: kWhiteColors,
+              duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+        }
+        context.loaderOverlay.hide();
+      } catch (e) {
+        Toast.show(kErrorServer, context,
+            backgroundColor: kErrorColor,
+            textColor: kWhiteColors,
+            duration: Toast.LENGTH_LONG,
+            gravity: Toast.BOTTOM);
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   @override
@@ -201,9 +137,11 @@ class _SignUpFormState extends State<SignUpForm> {
     phoneController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    _codeCaptchaController.dispose();
   }
 
-  String _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   Random _rnd = Random();
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
@@ -212,148 +150,168 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     String code = getRandomString(6);
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile(
-                    title: Text(
-                      kCitizen,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        print('value: $value');
-                        _isCitizen = value;
-                      });
-                    },
-                    value: 0,
-                    groupValue: _isCitizen,
+    return LoaderOverlay(
+      child: Consumer(
+        builder: (BuildContext context, SignUpProvider provider, Widget child) {
+          return LoaderOverlay(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          title: Text(
+                            kCitizen,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _formKey.currentState.reset();
+                              _isCitizen = value;
+                            });
+                          },
+                          value: 0,
+                          groupValue: _isCitizen,
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile(
+                          title: Text(kEnterprise),
+                          onChanged: (value) {
+                            setState(() {
+                              _formKey.currentState.reset();
+                              _isCitizen = value;
+                            });
+                          },
+                          value: 1,
+                          groupValue: _isCitizen,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Expanded(
-                  child: RadioListTile(
-                    title: Text(kEnterprise),
-                    onChanged: (value) {
-                      setState(() {
-                        print('value: $value');
-                        _isCitizen = value;
-                      });
-                    },
-                    value: 1,
-                    groupValue: _isCitizen,
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: defaultPadding),
+                        child: Text("(*) là $kRequired",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: mediumSize, color: kErrorColor)),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: defaultPadding),
-                  child: Text("(*) là $kRequired",
-                      textAlign: TextAlign.start,
-                      style:
-                          TextStyle(fontSize: mediumSize, color: kErrorColor)),
-                ),
-              ],
-            ),
-            _isCitizen == 0
-                ? _textFullNameInput(
-                    fullNameController, kFullName + " (*)", Icons.person)
-                : _textCodeEnterpriseInput(codeEnterpriseController,
-                    kCodeEnterprise + " (*)", Icons.account_balance),
-            _isCitizen == 0
-                ? SizedBox()
-                : _textNameEnterpriseInput(nameEnterpriseController,
-                    kNameEnterprise + " (*)", Icons.account_balance),
-            _isCitizen != 0
-                ? SizedBox()
-                : _textPassportInput(passportController, kPassport + " (*)",
-                    Icons.assignment_rounded),
-            _textDateCreatePassportInput(dateCreateController,
-                kDateCreatePassport + " (*)", Icons.date_range),
-            _textEmailInput(emailController, kEmail + " (*)", Icons.email),
-            _textPhoneInput(phoneController, kNumberPhone, Icons.phone),
-            _textPasswordInput(
-                kPassword + " (*)", false, Icons.vpn_key, _passwordVisibility),
-            _textPasswordInput(kConfirmPassword + " (*)", true, Icons.vpn_key,
-                _confirmPasswordVisibility),
-            SizedBox(height: defaultPadding),
-            // ListTile(        Điều khoản sử dụng
-            //   onTap: () {
-            //     setState(() {
-            //       isAccept = !isAccept;
-            //     });
-            //   },
-            //   contentPadding: EdgeInsets.all(0),
-            //   leading: Checkbox(
-            //     checkColor: kWhiteColors,
-            //     activeColor: kPrimaryColors,
-            //     value: isAccept,
-            //     onChanged: (bool value) {
-            //       setState(() {
-            //         isAccept = value;
-            //       });
-            //     },
-            //   ),
-            //   title: Text(kAgreeTerm),
-            // ),
-            SizedBox(height: defaultPadding),
-            Row(children: [
-              Expanded(child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal:8.0),
-                child: TextFormField(
-                  maxLength: 6,
-                  controller: _codeCaptchaController,
-                  validator: (value) {
-                    if(value.isEmpty){
-                      return kRequired;
-                    } else if(value != code){
-                      setState(() {
-                        _codeCaptchaController.clear();
-                      });
-                      return kCaptchaNotMatch;
-                    }
-                    return null;
-                  },
-                ),
-              )),
-              Container(
-                  alignment: Alignment.center,
-                  child: HBCheckCode(
-                    code: code,
-                  )),
-              InkWell(
-                  onTap: () {
-                    setState(() {});
-                  },
-                  child: Icon(Icons.refresh)),
-            ]),
-            SizedBox(height: defaultPadding),
-            Center(
-              child: _isLoading
-                  ? ButtonLoadingWidget()
-                  : ButtonWidget(
+                  Expanded(
+                      child: ListView(padding: EdgeInsets.all(0), children: [
+                    _isCitizen == 0
+                        ? _textFullNameInput(
+                            fullNameController, kFullName, Icons.person)
+                        : _textNameEnterpriseInput(nameEnterpriseController,
+                            kNameEnterprise, Icons.account_balance),
+                    _isCitizen == 0
+                        ? _textPassportInput(passportController, kPassport,
+                            Icons.assignment_rounded)
+                        : _textCodeEnterpriseInput(codeEnterpriseController,
+                            kCodeEnterprise, Icons.account_balance),
+                    _textDateCreatePassportInput(dateCreateController,
+                        kDateCreatePassport, Icons.date_range),
+                    _textEmailInput(emailController, kEmail, Icons.email),
+                    _textPhoneInput(phoneController, kNumberPhone, Icons.phone),
+                    _textPasswordInput(
+                        kPassword, false, Icons.vpn_key, _passwordVisibility),
+                    _textPasswordInput(kConfirmPassword, true, Icons.vpn_key,
+                        _confirmPasswordVisibility),
+                    SizedBox(height: defaultPadding),
+                    inputCaptcha(code),
+                  ])),
+                  // ListTile(        Điều khoản sử dụng
+                  //   onTap: () {
+                  //     setState(() {
+                  //       isAccept = !isAccept;
+                  //     });
+                  //   },
+                  //   contentPadding: EdgeInsets.all(0),
+                  //   leading: Checkbox(
+                  //     checkColor: kWhiteColors,
+                  //     activeColor: kPrimaryColors,
+                  //     value: isAccept,
+                  //     onChanged: (bool value) {
+                  //       setState(() {
+                  //         isAccept = value;
+                  //       });
+                  //     },
+                  //   ),
+                  //   title: Text(kAgreeTerm),
+                  // ),
+
+                  SizedBox(height: defaultPadding),
+                  Center(
+                    child: ButtonWidget(
                       onClick: () {
+                        KeyboardUtil.hideKeyboard(context);
                         if (_formKey.currentState.validate()) {
                           print("Validated");
-                          getFormSignUp();
+                          getFormSignUp(provider);
                           // widget.toLogin();
                         } else {
+                          Toast.show(kFormNotValidated, context,
+                              backgroundColor: kWarningColor,
+                              textColor: kWhiteColors,
+                              duration: Toast.LENGTH_LONG,
+                              gravity: Toast.BOTTOM);
                           print("Not Validated");
                         }
                       },
                       btnText: kRegistor,
                     ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
+  }
+
+  Row inputCaptcha(String code) {
+    return Row(children: [
+      Expanded(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: TextFormField(
+          maxLength: 6,
+          controller: _codeCaptchaController,
+          decoration: InputDecoration(
+              counterText: "",
+              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelText: 'Mã captcha (*)'),
+          validator: (value) {
+            if (value.isEmpty) {
+              return kRequired;
+            } else if (value != code) {
+              setState(() {
+                _codeCaptchaController.clear();
+              });
+              return kCaptchaNotMatch;
+            }
+            return null;
+          },
+        ),
+      )),
+      Container(
+          alignment: Alignment.center,
+          child: HBCheckCode(
+            code: code,
+          )),
+      InkWell(
+          onTap: () {
+            setState(() {});
+          },
+          child: Icon(Icons.refresh)),
+    ]);
   }
 
   //Họ và tên
@@ -368,9 +326,11 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
-            labelText: hint,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            labelText: hint + " (*)",
             labelStyle: TextStyle(fontWeight: FontWeight.bold),
             contentPadding: EdgeInsets.symmetric(vertical: defaultPadding)),
         validator: (value) {
@@ -398,11 +358,14 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        focusNode: isConfirm ? focus : null,
         obscureText: visible,
-        textInputAction: isConfirm ? TextInputAction.done : TextInputAction.go,
+        textInputAction:
+            isConfirm ? TextInputAction.done : TextInputAction.next,
         controller: isConfirm ? confirmPasswordController : passwordController,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
           suffixIcon: IconButton(
               icon: visible
@@ -410,6 +373,12 @@ class _SignUpFormState extends State<SignUpForm> {
                   : Icon(Icons.visibility_off_outlined, size: highSize),
               onPressed: () => _toggle(isConfirm)),
         ),
+        onFieldSubmitted: isConfirm
+            ? null
+            : (v) {
+                print('next');
+                FocusScope.of(context).requestFocus(focus);
+              },
         validator: (value) {
           if (value.isEmpty) {
             return kRequired;
@@ -436,10 +405,12 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
         validator: (value) {
@@ -468,27 +439,40 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         focusNode: AlwaysDisabledFocusNode(),
         controller: controller,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
           suffixIcon: Icon(icon),
         ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return kRequired;
+          }
+          return null;
+        },
         onTap: () async {
-          await DatePicker.showDatePicker(context,
-              showTitleActions: true,
-              minTime: DateTime(1900, 1, 1),
-              maxTime: DateTime.now(),
-              onChanged: (date) {}, onConfirm: (date) {
-            setState(() {
-              controller.text = DateFormat('dd/MM/yyyy').format(date);
-            });
-            print('confirm $date');
-          }, currentTime: DateTime.now(), locale: LocaleType.vi);
+          await showDatePicker(controller);
         },
       ),
     );
+  }
+
+  Future<void> showDatePicker(TextEditingController controller) async {
+    FocusScope.of(context).unfocus();
+    await DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(1900, 1, 1),
+        maxTime: DateTime.now(),
+        onChanged: (date) {}, onConfirm: (date) {
+      setState(() {
+        controller.text = DateFormat('dd/MM/yyyy').format(date);
+        KeyboardUtil.hideKeyboard(context);
+      });
+    }, currentTime: DateTime.now(), locale: LocaleType.vi);
   }
 
   //Email
@@ -503,11 +487,16 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
+        onFieldSubmitted: (v) {
+          FocusScope.of(context).nextFocus();
+        },
         validator: (value) {
           if (value.isEmpty) {
             return kRequired;
@@ -532,9 +521,11 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         keyboardType: TextInputType.phone,
         decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
           labelText: hint,
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -564,9 +555,11 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
         validator: (value) {
@@ -593,11 +586,21 @@ class _SignUpFormState extends State<SignUpForm> {
       padding: EdgeInsets.only(
           left: xSmallSize, right: xSmallSize, bottom: defaultPadding),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
-          labelText: hint,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: hint + " (*)",
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return kRequired;
+          } else if (!patternCode.hasMatch(value)) {
+            return kNotCharacter;
+          }
+          return null;
+        },
       ),
     );
   }

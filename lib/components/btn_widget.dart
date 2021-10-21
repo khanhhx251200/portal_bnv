@@ -1,4 +1,5 @@
 import 'package:app_mobile/core/constants/color_constants.dart';
+import 'package:app_mobile/core/constants/size_constant.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
@@ -22,7 +23,7 @@ class ButtonWidget extends StatelessWidget {
               end: Alignment.centerLeft,
               begin: Alignment.centerRight),
           borderRadius: BorderRadius.all(
-            Radius.circular(100),
+            Radius.circular(xSmallSize),
           ),
         ),
         alignment: Alignment.center,

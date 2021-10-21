@@ -6,6 +6,7 @@ import 'package:app_mobile/core/constants/string_constants.dart';
 import 'package:app_mobile/core/utils/keyboard_utils.dart';
 import 'package:app_mobile/pages/home/components/search_all_in_app.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchField extends StatelessWidget {
   const SearchField({
@@ -15,10 +16,12 @@ class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: SizeConfig.screenWidth*0.9,
+      height: 40,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      width: SizeConfig.screenWidth ,
       decoration: BoxDecoration(
-        color: kPrimaryColors.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(15),
+        color: kSecondColor.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(48),
       ),
       child: TextField(
         focusNode: AlwaysDisabledFocusNode(),
@@ -29,14 +32,12 @@ class SearchField extends StatelessWidget {
         },
         onChanged: (value) => print(value),
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(20),
-                vertical: getProportionateScreenWidth(9)),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
             hintText: kSearch,
-            prefixIcon: Icon(Icons.search)),
+            hintStyle: GoogleFonts.roboto(color: kWhiteColors),
+            prefixIcon: Icon(Icons.search, color: kWhiteColors)),
       ),
     );
   }

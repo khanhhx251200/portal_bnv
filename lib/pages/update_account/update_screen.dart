@@ -7,6 +7,7 @@ import 'package:app_mobile/core/constants/string_constants.dart';
 import 'package:app_mobile/pages/update_account/components/text_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 class UpdateAccountScreen extends StatefulWidget {
@@ -36,6 +37,12 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
   }
 
   @override
+  void deactivate() {
+    EasyLoading.dismiss();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _disposeController();
@@ -61,7 +68,7 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
     _phoneController.text = '0328962512';
   }
 
-  updateAccount() {
+  updateAccount(BuildContext context) {
     print('passport: '+_passportController.text);
     print('fullName: '+_fullNameController.text.trim());
     print('nameEnterprise: '+_nameEnterpriseController.text.trim());
@@ -69,6 +76,11 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
     print('dateCreate: '+_dateCreateController.text);
     print('email: '+_emailController.text.trim());
     print('phone: '+_phoneController.text);
+    String newName = _fullNameController.text;
+    EasyLoading.show(status: 'Đang tải...');
+
+
+
   }
 
   @override
@@ -165,7 +177,7 @@ class _UpdateAccountScreenState extends State<UpdateAccountScreen> {
             onTap: () {
               if (_formKey.currentState.validate()) {
                 print('Validated');
-                updateAccount();
+                updateAccount(context);
               } else {
                 print('not validate');
               }

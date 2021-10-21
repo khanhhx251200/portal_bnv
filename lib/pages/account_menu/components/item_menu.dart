@@ -20,7 +20,7 @@ class ItemMenu extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: mediumSize, vertical: xSmallSize/2),
       child: MaterialButton(
         padding: EdgeInsets.symmetric(horizontal: bigSize, vertical: xSmallSize),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(xSmallSize)),
         color: kWhiteColors,
         onPressed: onPress,
         child: Row(

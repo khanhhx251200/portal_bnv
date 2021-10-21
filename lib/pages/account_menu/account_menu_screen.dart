@@ -7,7 +7,10 @@ import 'package:app_mobile/pages/account_menu/components/item_menu.dart';
 import 'package:app_mobile/pages/auth/auth_screen.dart';
 import 'package:app_mobile/pages/auth/password_manager/password_manager_screen.dart';
 import 'package:app_mobile/pages/auth/verify_email/verify_email_screen.dart';
+import 'package:app_mobile/pages/document_and_file_manage/components/processing_status/processing_status_screen.dart';
+import 'package:app_mobile/pages/document_and_file_manage/document_and_file_manage_screen.dart';
 import 'package:app_mobile/pages/frequently_asked_questions/frequently_asked_questions_screen.dart';
+import 'package:app_mobile/pages/phieu_yeu_cau_manage/phieu_yeu_cau_manage_screen.dart';
 import 'package:app_mobile/pages/update_account/update_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +24,16 @@ class AccountMenu extends StatefulWidget {
 class _AccountMenuState extends State<AccountMenu> {
   final _preferences = PreferencesService();
 
+  String _fullName = "Hoàng Xuân Khánh";
+
   @override
   void initState() {
     super.initState();
+  }
+
+  pushToPostsManage(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ProcessingStatusScreen()));
   }
 
   pushToPasswordManage(BuildContext context) {
@@ -31,13 +41,32 @@ class _AccountMenuState extends State<AccountMenu> {
         MaterialPageRoute(builder: (context) => PasswordManagerScreen()));
   }
 
-  pushToAccountManage(BuildContext context) {
-    Navigator.push(context,
+  pushToAccountManage(BuildContext context) async {
+    String fullNameChanged = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => UpdateAccountScreen()));
+
+    if (fullNameChanged != null) {
+      print('name: $fullNameChanged');
+      setState(() => _fullName = fullNameChanged.toString());
+    }
   }
+
   pushToAskAndQuestion(BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => FrequentlyAskedQuestionScreen()));
+        MaterialPageRoute(
+            builder: (context) => FrequentlyAskedQuestionScreen()));
+  }
+
+  pushToDocumentAndFile(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) =>
+            DocumentAndFileManageScreen(
+              parentNodeId: '032fc29c-b91f-4ab4-bc19-b9750df343ac',)));
+  }
+
+  pushToPhieuYeuCauManage(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => PhieuYeuCauManageScreen()));
   }
 
   logout() async {
@@ -66,56 +95,70 @@ class _AccountMenuState extends State<AccountMenu> {
                 backgroundImage: AssetImage('assets/images/avatar_empty.png'),
               ),
               title: Text(
-                'Hoàng Xuân Khánh',
+                _fullName,
                 style:
                 TextStyle(color: kWhiteColors, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-          SizedBox(height: defaultPadding),
-          ListView(
-            physics: BouncingScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              ItemMenu(text: kAccountManage, icon: Icons.person, onPress: () {
-                pushToAccountManage(context);
-              }),
-              ItemMenu(text: kFileManage, icon: Icons.folder, onPress: () {}),
-              ItemMenu(
-                  text: kDocumentManage,
-                  icon: Icons.insert_drive_file,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kProcedureManage,
-                  icon: Icons.settings_applications_sharp,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kRequestManage,
-                  icon: Icons.request_page,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kPayManage,
-                  icon: Icons.payment,
-                  onPress: () {}),
-              ItemMenu(
-                  text: kPostsManage, icon: Icons.assignment, onPress: () {}),
-              ItemMenu(
-                  text: kPasswordManage,
-                  icon: Icons.vpn_key_sharp,
-                  onPress: () {
-                    pushToPasswordManage(context);
-                  }),
-              ItemMenu(
-                  text: kFrequentlyAskedQuestions,
-                  icon: Icons.question_answer,
-                  onPress: () {
-                    pushToAskAndQuestion(context);
-                  }),
-              ItemMenu(text: kLogout, icon: Icons.logout, onPress: () {
-                _openSignOutDrawer(context);
-              }),
-            ],
-          )
+          Expanded(
+            child: ListView(
+              children: [
+                SizedBox(height: defaultPadding),
+                ListView(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    ItemMenu(
+                        text: kAccountManage, icon: Icons.person, onPress: () {
+                      pushToAccountManage(context);
+                    }),
+                    ItemMenu(text: kDocumentAndFileManage,
+                        icon: Icons.folder,
+                        onPress: () {
+                          pushToDocumentAndFile(context);
+                        }),
+                    ItemMenu(
+                        text: kProcedureManage,
+                        icon: Icons.settings_applications_sharp,
+                        onPress: () {}),
+                    ItemMenu(
+                        text: kRequestManage,
+                        icon: Icons.request_page,
+                        onPress: () {
+                          pushToPhieuYeuCauManage(context);
+                        }),
+                    ItemMenu(
+                        text: kPayManage,
+                        icon: Icons.payment,
+                        onPress: () {}),
+                    ItemMenu(
+                        text: kPostsManage,
+                        icon: Icons.assignment,
+                        onPress: () {
+                          pushToPostsManage(context);
+                        }),
+                    ItemMenu(
+                        text: kPasswordManage,
+                        icon: Icons.vpn_key_sharp,
+                        onPress: () {
+                          pushToPasswordManage(context);
+                        }),
+                    ItemMenu(
+                        text: kFrequentlyAskedQuestions,
+                        icon: Icons.question_answer,
+                        onPress: () {
+                          pushToAskAndQuestion(context);
+                        }),
+                    ItemMenu(text: kLogout, icon: Icons.logout, onPress: () {
+                      _openSignOutDrawer(context);
+                    }),
+                    SizedBox(height: defaultPadding),
+                  ],
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
